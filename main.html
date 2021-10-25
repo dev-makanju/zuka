@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0  maximum-scale=1 , user-scalable=no">
+    <link rel="icon" href="robot.jpg">
+    <title>Zuka</title>
+</head>
+<body>
+    <div id="tab" class="container">
+        <h1 id="points" style="font-size: 50px;">0</h1>
+        <p>Points</p> 
+        <div class="buts">
+           <button id="startGame">Start game</button>  
+        </div>
+   </div>
+   <div><span>Score:</span><span id="scroreEl">0</span></div>
+   <canvas></canvas>
+   <script src="main.js"></script>
+   
+   <style>
+       body{
+           margin: 0;
+           background: url("chips.png");
+           background-size: 100% 100%;
+           background-repeat: no-repeat;
+       }
+       div{
+           position: fixed;
+           color: #fff;
+           margin-left: 4px;
+           margin-top: 4px;
+           user-select: none;
+       }
+
+
+       p , h1{
+           color: #000;
+           text-align: center;
+       }
+   
+       .container{
+           padding: 3px;
+           margin: auto;
+           position: absolute;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           width: 400px;
+           height: 200px;
+           border-radius: 10px; 
+           background-color: #fff;
+           box-shadow: 0px 2px 5px rgba( 0 , 0 , 0 , .5);
+       }
+
+
+       button{
+           padding: 10px;
+           border-radius: 17px;
+           border: none;
+           width: 393px;
+           color: #fff;
+           background: #000;
+       }
+
+       @media (max-width: 450px) {
+         .container{
+           width: 300px;
+           height: 200px;
+         }
+
+         button{
+           width: 300px ;
+         }
+       }
+   </style>    
+</body>
+</html>
