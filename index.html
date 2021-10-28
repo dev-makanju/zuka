@@ -16,8 +16,9 @@
     </div>
     <div class="container-info">
         <div class="container-wrapper">      
-            <h2 class="join">Join the train</h2>
+            <h2 class="join" id="bigJoin">Join the train</h2>
             <h3 class="click"><a id="join">click to start</a></h3>
+            <h3 class="click"><a href="main.html" id="back">back to game</a></h3>
             <p style="text-align:center">Top performers</p>
             <div class="leaderBoard">
                <div class="user-info">
@@ -40,10 +41,10 @@
            <div class="form-wrapper" id="form">
 
             <div class="form">
-                <form action=""></form>
+                <form action="" id="forms">
                    <button class="close-modal" id="close">X</button>
                    <label for="username">Add your username...</label>
-                   <input type="text" id="username" placeholder="Username" autocomplete="">
+                   <input type="text" id="username" autofocus>
                    <button id="btnClick" class="but-click">Join</button>
                 </form>
             </div>
@@ -240,11 +241,9 @@ a{
 .form input{
     padding: 7px;
     background: none;
-    color: #fff;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-bottom-color: orange;
+    color: #000;
+    border: 1px solid green;
+    border-radius: 5px;
     outline: none;
     font-size: 18px;
     font-family: monospace;
@@ -286,13 +285,96 @@ button{
     const join = document.getElementById("join");
     const form = document.getElementById("form");
     const clos = document.getElementById("close");
-    const username = document.querySelector("#username").value;
-    const btnClick = document.getElementById("btnClick")
+    const user = document.querySelector("#username");
+    const forms = document.getElementById("forms")
+    const bigJoin = document.getElementById("bigJoin")
+    const back = document.getElementById("back");
+
+
+
+    //create an empty array
+    //to load data from localStorage;
+
+    const loadedData = [];
+
+    //initially 
+    back.style.display = 'none'
+
+    //set a cookie for this unique user
+    function setCookie(cname , cvalue , expdays){
+        const date = new Date();
+        date.setTime(date.getTime() + (expdays*24*60*60*1000))
+        let expires = "expires="+ date.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        return document.cookie;
+    }
     
-    btnClick.addEventListener('click' , (ev) => {
-       ev.preventDefault() 
-       console.log(username)
+    function getCookie(cname){
+        let name = cname + "=";
+        let decodeCookie = decodeURIComponent(document.cookie)
+        let ca = decodeCookie.split(';')
+        for(var i = 0; i < ca.length; i++){
+            let res = ca[i];
+            if(res.indexOf(name) == 0){
+                return res.substring(name.lenght, res.length)
+            }
+        }
+        return "";
+    }
+
+    //check if cookie isset
+    function checkCookie(){
+        let id = getCookie('Zuka-tracker-id');
+        if(id !== ""){
+            join.style.display = 'none'
+            back.style.display = 'block'    
+            let data = localStorage.getItem("myData");
+            let res = JSON.parse(data);
+            bigJoin.innerHTML = "Hello " + res.username     
+        }else{
+            join.style.display = 'block'     
+        }
+        return;
+    }
+
+    function loadData(){
+        var storage = JSON.parse(localStorage.getItem("myData"));
+        loadedData.push(storage);
+    }
+
+    console.log(loadedData)
+
+    document.addEventListener('DOMContentLoaded' , () => {
+         checkCookie();
+         loadData();
     })
+
+     
+    //add a form event listener
+    forms.addEventListener('submit' , (ev) => {
+        ev.preventDefault() 
+        if(user.value == ''){
+            user.style.borderColor = '#e74e3c'
+        }else{
+                const numbers = Math.floor(Math.random() * 1001)
+                const names = user.value;
+                a = names.slice(0 , 3)
+                result = a + numbers 
+                const cookieData = setCookie('Zuka-tracker-id' , result , 365 );   
+                let myData = {
+                    id: cookieData,
+                    username: user.value,
+                    score: 0
+                }
+                
+                let dataSerialize = JSON.stringify(myData)
+                localStorage.setItem("myData" , dataSerialize)
+                user.value = ''
+                window.location = 'main.html'
+        }
+    });
+
+    
     join.addEventListener( 'click' , () =>  {
         form.classList.add('isClicked')
     })

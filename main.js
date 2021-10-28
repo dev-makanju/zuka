@@ -72,7 +72,8 @@ class Enemies{
     }
 }
 
-const friction = 0.98
+const friction = 0.98;
+
 class Paticle{
     constructor(x , y , radius , color , velocity){
         this.x = x
@@ -106,7 +107,6 @@ class Paticle{
 
 const x = canvas.width / 2
 const y = canvas.height / 2
-
 const player = new Player( x , y , 20, '#fff')
 
 
@@ -177,7 +177,7 @@ function animate(){
              projectiles.y - projectiles.radius > canvas.height){
             setTimeout(() => {
                 projectile.splice(index , 1)
-           } , 0)
+           } , 0 )
         }
     });
 
@@ -189,7 +189,9 @@ function animate(){
             cancelAnimationFrame(animationId);
             tab.style.display = "block"
             points.innerHTML = score;
+            updateScore(score);
         }
+
         projectile.forEach((projectiles , projectilesIndex) => {
             const dist = Math.hypot(projectiles.x - enemy.x , projectiles.y - enemy.y)
             //when projectile touch enemy
@@ -224,14 +226,13 @@ function animate(){
 }
 
 addEventListener( 'click' , (event) => {
-    console.log(event)
+    //console.log(event)
     const angle = Math.atan2(event.clientY - canvas.height / 2 , event.clientX - canvas.width / 2)
     const velocity = {
         x: Math.cos(angle) * 5,
         y: Math.sin(angle) * 5
     }
 
-    console.log(velocity)
     projectile.push(new Projectiles(canvas.width / 2, canvas.height / 2 , 5 , '#fff' , velocity ))
 })
 
@@ -241,4 +242,44 @@ startGame.addEventListener('click' , () => {
     animate()    
     spawnEnemies() 
 })
+
+
+function getCookie(cname){
+    let name = cname + "=";
+    let decodeCookie = decodeURIComponent(document.cookie)
+    let ca = decodeCookie.split(';')
+    for(var i = 0; i < ca.length; i++){
+        let res = ca[i];
+        if(res.indexOf(name) == 0){
+            return res.substring(name.lenght, res.length)
+        }
+    }
+    return "";
+}
+
+//check if cookie isset
+var id = getCookie('Zuka-tracker-id');
+function checkCookie(){
+    if(id !== ""){    
+        let data = localStorage.getItem("myData");
+        let res = JSON.parse(data);   
+        
+    }
+    return;
+}
+
+function updateScore(newScore){
+    let res = JSON.parse(localStorage.getItem("myData"));
+    if(res.id == id){
+        console.log(res.id)
+    }
+}
+
+document.addEventListener('DOMContentLoaded' , () => {
+     checkCookie()
+})
+
+
+
+
 
