@@ -22,21 +22,9 @@
             <p style="text-align:center">Top performers</p>
             <div class="leaderBoard">
                <div class="user-info">
-                  <h2>Oluwafemi</h2>
-                  <p>3000</p>
+                  <h2 id="textUser">Oluwafemi</h2>
+                  <p id="textScore">3000</p>
                </div>
-               <div class="user-info">
-                  <h2>Oluwafemi</h2>
-                  <p>3000</p>
-               </div>
-               <div class="user-info">
-                  <h2>Oluwafemi</h2>
-                  <p>3000</p>
-              </div>
-              <div class="user-info">
-                  <h2>Oluwafemi</h2>
-                  <p>3000</p>
-              </div>
             </div>
            <div class="form-wrapper" id="form">
 
@@ -155,7 +143,7 @@ a{
     position: absolute;
     inset: 0;
     background: rgba(0 , 0 , 0 , .7);
-    height: 100%;
+    height: 100vh;
     width: 100%;
 }
 
@@ -281,6 +269,33 @@ button{
 
 </style>
 
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiA58E0hklfSHzsbC7wwKv63DpWmic9n0",
+      authDomain: "todoapp-41261.firebaseapp.com",
+      projectId: "todoapp-41261",
+      storageBucket: "todoapp-41261.appspot.com",
+      messagingSenderId: "1053069990465",
+      appId: "1:1053069990465:web:38d0fd8a13b1a6162ac4c0"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import { getDatabase , ref , set , child , update , remove } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js";
+
+    const db = getDatabase();
+    console.log(db)
+  </script>
+
+
 <script>
     const join = document.getElementById("join");
     const form = document.getElementById("form");
@@ -289,6 +304,8 @@ button{
     const forms = document.getElementById("forms")
     const bigJoin = document.getElementById("bigJoin")
     const back = document.getElementById("back");
+    const textUser = document.getElementById("textUser");
+    const textScore = document.getElementById("textScore");
 
 
 
@@ -296,6 +313,11 @@ button{
     //to load data from localStorage;
 
     const loadedData = [];
+
+    for(let i = 0; i < loadedData.length; i++){
+        textUser.innerHTML = loadedData[i].username;
+        textScore.innerHTML = loadedData[i].score;
+    }
 
     //initially 
     back.style.display = 'none'
@@ -325,31 +347,40 @@ button{
     //check if cookie isset
     function checkCookie(){
         let id = getCookie('Zuka-tracker-id');
-        if(id !== ""){
-            join.style.display = 'none'
-            back.style.display = 'block'    
-            let data = localStorage.getItem("myData");
-            let res = JSON.parse(data);
-            bigJoin.innerHTML = "Hello " + res.username     
-        }else{
-            join.style.display = 'block'     
+        for(var i = 0; i < loadedData.length; i++ ){
+            if(id == loadedData[i].id){
+                join.style.display = 'none'
+                back.style.display = 'block'    
+                bigJoin.innerHTML = "Hello " + loadedData[i].username     
+            }else{
+                join.style.display = 'block'     
+            }
+               return;
         }
-        return;
+        
     }
 
     function loadData(){
-        var storage = JSON.parse(localStorage.getItem("myData"));
-        loadedData.push(storage);
+        if(!localStorage.getItem("zukaData") == true){
+            localStorage.setItem("zukaData" , loadedData);
+        }else{
+            localStorage.removeItem("zukaData")
+            localStorage.setItem("zukaData" , loadedData);
+        }
     }
 
-    console.log(loadedData)
 
     document.addEventListener('DOMContentLoaded' , () => {
-         checkCookie();
-         loadData();
+        checkCookie(); 
+        datas = JSON.parse(localStorage.getItem("zukaData"))
+        loadedData.push(datas)
     })
 
-     
+    console.log(loadedData);
+    console.log(localStorage)
+
+    
+
     //add a form event listener
     forms.addEventListener('submit' , (ev) => {
         ev.preventDefault() 
@@ -360,21 +391,21 @@ button{
                 const names = user.value;
                 a = names.slice(0 , 3)
                 result = a + numbers 
-                const cookieData = setCookie('Zuka-tracker-id' , result , 365 );   
+                const cookieData = setCookie('Zuka-tracker-id' , result , 365 );  
+
                 let myData = {
                     id: cookieData,
                     username: user.value,
                     score: 0
                 }
-                
-                let dataSerialize = JSON.stringify(myData)
-                localStorage.setItem("myData" , dataSerialize)
+  
+                loadedData.push(JSON.stringify(myData));
+                loadData();
                 user.value = ''
                 window.location = 'main.html'
         }
     });
 
-    
     join.addEventListener( 'click' , () =>  {
         form.classList.add('isClicked')
     })

@@ -263,7 +263,6 @@ function checkCookie(){
     if(id !== ""){    
         let data = localStorage.getItem("myData");
         let res = JSON.parse(data);   
-        
     }
     return;
 }
