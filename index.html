@@ -17,6 +17,7 @@
     <div class="container-info">
         <div class="container-wrapper">      
             <h2 class="join" id="bigJoin">Join the train</h2>
+            <p id="msg"></p>
             <h3 class="click"><a id="join">click to start</a></h3>
             <h3 class="click"><a href="main.html" id="back">back to game</a></h3>
             <p style="text-align:center">Top performers</p>
@@ -39,6 +40,147 @@
            </div>
         </div>
     </div>
+
+ 
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiA58E0hklfSHzsbC7wwKv63DpWmic9n0",
+      authDomain: "todoapp-41261.firebaseapp.com",
+      projectId: "todoapp-41261",
+      storageBucket: "todoapp-41261.appspot.com",
+      messagingSenderId: "1053069990465",
+      appId: "1:1053069990465:web:38d0fd8a13b1a6162ac4c0"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import { getDatabase , ref , set , get , child , update , remove} from "https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js";
+
+    const db = getDatabase();
+
+    /**********identifiers************/
+
+    const join = document.getElementById("join");
+    const form = document.getElementById("form");
+    const clos = document.getElementById("close");
+    const user = document.querySelector("#username");
+    const forms = document.getElementById("forms")
+    const bigJoin = document.getElementById("bigJoin")
+    const back = document.getElementById("back");
+    const textUser = document.getElementById("textUser");
+    const textScore = document.getElementById("textScore");
+    const msg = document.getElementById("msg");
+
+
+
+
+    //create an empty array
+    //to load data from localStorage;
+
+    const loadedData = [];
+
+    for(let i = 0; i < loadedData.length; i++){
+        textUser.innerHTML = loadedData[i].username;
+        textScore.innerHTML = loadedData[i].score;
+    }
+
+    //initially 
+    back.style.display = 'none'
+
+    //set a cookie for this unique user
+    function setCookie(cname , cvalue , expdays){
+        const date = new Date();
+        date.setTime(date.getTime() + (expdays*24*60*60*1000))
+        let expires = "expires="+ date.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        return document.cookie;
+    }
+    
+    function getCookie(cname){
+        let name = cname + "=";
+        let decodeCookie = decodeURIComponent(document.cookie)
+        let ca = decodeCookie.split(';')
+        for(var i = 0; i < ca.length; i++){
+            let res = ca[i];
+            if(res.indexOf(name) == 0){
+                return res.substring(name.lenght, res.length)
+            }
+        }
+        return "";
+    }
+
+    //check if cookie isset
+    function checkCookie(){
+        let id = getCookie('Zuka-tracker-id');
+           if(id){
+               join.style.display = 'none'
+               back.style.display = 'block'    
+               bigJoin.innerHTML = "Hello "
+           }else{
+               join.style.display = 'block';
+           }
+           return;
+    }
+
+    async function loadData(){
+        const dbref = await db.ref()
+        console.log(dbref.ZukaUsers)
+
+        // dbref.forEach( () => {
+        //     console.log(deref)
+        // });
+    }
+
+
+    document.addEventListener('DOMContentLoaded' , () => {
+        checkCookie(); 
+        loadData();
+    });
+
+    
+
+    //add a form event listener
+    forms.addEventListener('submit' , (ev) => {
+        ev.preventDefault() 
+        if(user.value == ''){
+            user.style.borderColor = '#e74e3c'
+        }else{
+            const numbers = Math.floor(Math.random() * 1001)
+            const names = user.value;
+            const a = names.slice(0 , 3)
+            const result = a + numbers 
+            const cookieData = setCookie('Zuka-tracker-id' , result , 365 );  
+
+            set(ref ( db , "ZukaUsers/" + cookieData) , {
+                id: cookieData,
+                username: user.value,
+                score: 0
+            }).then( () => {
+                msg.style.color = "green" ;
+                msg.innerHTML = 'Success!!!' ;
+                location = 'main.html'
+            }).catch( err => {
+                msg.innerHTML = err;
+            });
+        }
+    });
+
+    join.addEventListener( 'click' , () =>  {
+        form.classList.add('isClicked')
+    })
+    clos.addEventListener( 'click' , () =>  {
+        form.classList.remove('isClicked');
+    });
+
+</script>
+   
 </body>
 </html>
 
@@ -62,6 +204,7 @@ html{
     font-size: 25px;
     text-align: center;
     padding: 10px 10px;
+    cursor: pointer;
 }
 
 .click{
@@ -269,148 +412,3 @@ button{
 
 </style>
 
-
-<script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAiA58E0hklfSHzsbC7wwKv63DpWmic9n0",
-      authDomain: "todoapp-41261.firebaseapp.com",
-      projectId: "todoapp-41261",
-      storageBucket: "todoapp-41261.appspot.com",
-      messagingSenderId: "1053069990465",
-      appId: "1:1053069990465:web:38d0fd8a13b1a6162ac4c0"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-
-    import { getDatabase , ref , set , child , update , remove } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-database.js";
-
-    const db = getDatabase();
-    console.log(db)
-  </script>
-
-
-<script>
-    const join = document.getElementById("join");
-    const form = document.getElementById("form");
-    const clos = document.getElementById("close");
-    const user = document.querySelector("#username");
-    const forms = document.getElementById("forms")
-    const bigJoin = document.getElementById("bigJoin")
-    const back = document.getElementById("back");
-    const textUser = document.getElementById("textUser");
-    const textScore = document.getElementById("textScore");
-
-
-
-    //create an empty array
-    //to load data from localStorage;
-
-    const loadedData = [];
-
-    for(let i = 0; i < loadedData.length; i++){
-        textUser.innerHTML = loadedData[i].username;
-        textScore.innerHTML = loadedData[i].score;
-    }
-
-    //initially 
-    back.style.display = 'none'
-
-    //set a cookie for this unique user
-    function setCookie(cname , cvalue , expdays){
-        const date = new Date();
-        date.setTime(date.getTime() + (expdays*24*60*60*1000))
-        let expires = "expires="+ date.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        return document.cookie;
-    }
-    
-    function getCookie(cname){
-        let name = cname + "=";
-        let decodeCookie = decodeURIComponent(document.cookie)
-        let ca = decodeCookie.split(';')
-        for(var i = 0; i < ca.length; i++){
-            let res = ca[i];
-            if(res.indexOf(name) == 0){
-                return res.substring(name.lenght, res.length)
-            }
-        }
-        return "";
-    }
-
-    //check if cookie isset
-    function checkCookie(){
-        let id = getCookie('Zuka-tracker-id');
-        for(var i = 0; i < loadedData.length; i++ ){
-            if(id == loadedData[i].id){
-                join.style.display = 'none'
-                back.style.display = 'block'    
-                bigJoin.innerHTML = "Hello " + loadedData[i].username     
-            }else{
-                join.style.display = 'block'     
-            }
-               return;
-        }
-        
-    }
-
-    function loadData(){
-        if(!localStorage.getItem("zukaData") == true){
-            localStorage.setItem("zukaData" , loadedData);
-        }else{
-            localStorage.removeItem("zukaData")
-            localStorage.setItem("zukaData" , loadedData);
-        }
-    }
-
-
-    document.addEventListener('DOMContentLoaded' , () => {
-        checkCookie(); 
-        datas = JSON.parse(localStorage.getItem("zukaData"))
-        loadedData.push(datas)
-    })
-
-    console.log(loadedData);
-    console.log(localStorage)
-
-    
-
-    //add a form event listener
-    forms.addEventListener('submit' , (ev) => {
-        ev.preventDefault() 
-        if(user.value == ''){
-            user.style.borderColor = '#e74e3c'
-        }else{
-                const numbers = Math.floor(Math.random() * 1001)
-                const names = user.value;
-                a = names.slice(0 , 3)
-                result = a + numbers 
-                const cookieData = setCookie('Zuka-tracker-id' , result , 365 );  
-
-                let myData = {
-                    id: cookieData,
-                    username: user.value,
-                    score: 0
-                }
-  
-                loadedData.push(JSON.stringify(myData));
-                loadData();
-                user.value = ''
-                window.location = 'main.html'
-        }
-    });
-
-    join.addEventListener( 'click' , () =>  {
-        form.classList.add('isClicked')
-    })
-    clos.addEventListener( 'click' , () =>  {
-        form.classList.remove('isClicked');
-    })
-
-</script>
