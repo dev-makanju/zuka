@@ -293,9 +293,8 @@ addEventListener( 'click' , (event) => {
         x: Math.cos(angle) * 5,
         y: Math.sin(angle) * 5
     }
-
     projectile.push(new Projectiles(canvas.width / 2, canvas.height / 2 , 5 , '#fff' , velocity ))
-})
+});
 
 startGame.addEventListener('click' , () => {
     init()

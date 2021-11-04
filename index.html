@@ -22,10 +22,7 @@
             <h3 class="click"><a href="main.html" id="back">back to game</a></h3>
             <p style="text-align:center">Top performers</p>
             <div class="leaderBoard">
-               <div class="user-info">
-                  <h2 id="textUser">Oluwafemi</h2>
-                  <p id="textScore">3000</p>
-               </div>
+               
             </div>
            <div class="form-wrapper" id="form">
 
@@ -77,9 +74,7 @@
     const textUser = document.getElementById("textUser");
     const textScore = document.getElementById("textScore");
     const msg = document.getElementById("msg");
-
-
-
+    const leaderBoard = document.querySelector(".leaderBoard");
 
     //create an empty array
     //to load data from localStorage;
@@ -129,13 +124,41 @@
            return;
     }
 
-    async function loadData(){
-        const dbref = await db.ref()
-        console.log(dbref.ZukaUsers)
 
-        // dbref.forEach( () => {
-        //     console.log(deref)
-        // });
+    function addGamersToDisplay(score , username){
+        const secondL = document.createElement("div");
+        const thirdL = document.createElement("h2");
+        const fourthL = document.createElement("p");
+        secondL.classList = "user-info"
+        thirdL.setAttribute("id" , "textUser");
+        fourthL.setAttribute("id","textScore");
+
+        thirdL.innerHTML = username;
+        fourthL.innerHTML = score;
+
+        secondL.appendChild(thirdL);
+        secondL.appendChild(fourthL);
+        leaderBoard.appendChild(secondL)
+    }
+
+    console.log(leaderBoard)
+
+    function addAllGamersToDisplay(theGamers){
+        leaderBoard.innerHTML = "";
+        theGamers.forEach(element => {
+             addGamersToDisplay(element.score , element.username )
+        });
+    }
+
+    function loadData(){
+        const dbRef = ref(db);
+        get(child(dbRef , "ZukaUsers")).then((snapshot) => {
+             var gamers = [];
+             snapshot.forEach(childSnaphot => {
+                 gamers.push(childSnaphot.val());
+             });
+             addAllGamersToDisplay(gamers);
+        });
     }
 
 
@@ -185,6 +208,7 @@
 </html>
 
 <style>
+
 *{
     margin: 0px;
     box-sizing: border-box;
@@ -231,6 +255,14 @@ a{
     -webkit-animation: elastic ease-in-out 5s infinite;
     -moz-animation: elastic ease-in-out 5s infinite;
     -o-animation: elastic ease-in-out 5s infinite;
+}
+
+
+@media (min-width: 1440px ) {
+    .container{
+        background-size: 100% 100%;
+        max-width: 100vw;
+    }    
 }
 
 @keyframes elastic {
@@ -308,6 +340,8 @@ a{
     display: flex;
     justify-content: center;
     align-items: center;
+    max-width: 450px;   
+    margin: auto;
 }
 
 .container-wrapper{
@@ -316,8 +350,13 @@ a{
     border-radius: 5px;
     width: 450px;
     height: 450px;
-    min-width: 340px;
     position: relative;
+}
+
+@media( min-width:1024px ) {
+    .container-wrapper{
+         width: 450px;
+    }
 }
 
 .leaderBoard{
@@ -329,10 +368,11 @@ a{
 
 .leaderBoard > .user-info{
     padding: 20px 10px;
-    display: inline-flex;
+    display: flex;
     border-bottom: 1px solid #000;
     width: 100%;
     margin: auto;
+    justify-content: space-between;
 }
 
 .leaderBoard > .user-info p{
