@@ -17,6 +17,7 @@
         </div>
    </div>
    <div><span>Score:</span><span id="scroreEl">0</span></div>
+   <div><span><a class="end-game-link" href="index.html">end game</a></span></div>
    <canvas></canvas>
 
    <script type="module">
@@ -28,7 +29,7 @@
     // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAiA58E0hklfSHzsbC7wwKv63DpWmic9n0",
-      authDomain: "todoapp-41261.firebaseapp.com",
+      authDomain: "todoapp-41261.firebaseapp.com",  
       projectId: "todoapp-41261",
       storageBucket: "todoapp-41261.appspot.com",
       messagingSenderId: "1053069990465",
@@ -51,7 +52,9 @@ const scoreEl = document.getElementById("scroreEl");
 const startGame = document.getElementById("startGame");
 const tab = document.getElementById("tab");
 const points = document.getElementById("points");
+const links = document.querySelector(".end-game-link");
 //check cookies
+links.style.display = "none";
 
 function getCookie(cname){
     let name = cname + "=";
@@ -251,6 +254,7 @@ function animate(){
             tab.style.display = "block"
             points.innerHTML = score;
             updateScore(score);
+            links.style.display = "block";
         }
 
         projectile.forEach((projectiles , projectilesIndex) => {
@@ -306,13 +310,20 @@ startGame.addEventListener('click' , () => {
 
 function updateScore(newScore){
     const data = getCookie('Zuka-tracker-id')
-    update(ref(db ,  "ZukaUsers/"  + data ),{
-        score: newScore
-    }).then( () => {
-        //
-    }).catch( (err) => {
-        //
-    })
+    const dbRef = ref(db);
+    get(child(dbRef , "ZukaUsers/" + data )).then( (snapshot) => {
+        if(snapshot.exists){
+            if(newScore > snapshot.val().score){
+                update(ref(db ,  "ZukaUsers/"  + data ),{
+                    score: newScore
+                }).then( () => {
+                   //
+                }).catch( (err) => {
+                   //
+                });
+            }
+        }
+    });
 }
 
 //check if cookie isset
@@ -352,6 +363,16 @@ document.addEventListener('DOMContentLoaded' , () => {
        p , h1{
            color: #000;
            text-align: center;
+       }
+
+       .end-game-link{
+           border: 1px solid red;
+           background: #e74e3c ;
+           text-decoration: none;
+           border-radius: 17px;
+           color: #fff;
+           cursor: pointer;
+           padding: 4px 4px;
        }
    
        .container{

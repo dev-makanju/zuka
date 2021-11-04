@@ -141,7 +141,6 @@
         leaderBoard.appendChild(secondL)
     }
 
-    console.log(leaderBoard)
 
     function addAllGamersToDisplay(theGamers){
         leaderBoard.innerHTML = "";
@@ -162,8 +161,8 @@
     }
 
 
+    checkCookie(); 
     document.addEventListener('DOMContentLoaded' , () => {
-        checkCookie(); 
         loadData();
     });
 
@@ -367,7 +366,7 @@ a{
 }
 
 .leaderBoard > .user-info{
-    padding: 20px 10px;
+    padding: 15px 10px;
     display: flex;
     border-bottom: 1px solid #000;
     width: 100%;
@@ -376,9 +375,10 @@ a{
 }
 
 .leaderBoard > .user-info p{
-    margin: auto;
+    margin-right: 20px;
     font-weight: 500;
     font-family: monospace;
+    float: right ;
 }
 
 .leaderBoard > .user-info h2{
